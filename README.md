@@ -7,6 +7,6 @@
 
 
 ### Possible image we plan to generate
-* Waving Baymax
+* Fist-bumping Baymax
 
 ![](https://i.kym-cdn.com/photos/images/original/000/862/677/d12.gif)
