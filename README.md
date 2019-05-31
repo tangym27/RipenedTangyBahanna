@@ -1,4 +1,4 @@
-# Michelle Tang && Hanna Yang: Team RottenTangyBahanna
+# Hanna Yang && Michelle Tang: Team RottenTangyBahanna
 
 ### List of features we plan to implement.
 * Pear shapes
