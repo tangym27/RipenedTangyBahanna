@@ -1,7 +1,7 @@
 # Hanna Yang && Michelle Tang: Team RottenTangyBahanna
 
 ### List of features we plan to implement.
-* Shapes (like a pear?)
+* Mesh
 * Phong and Gouraud Shading
 * Using vary to move the light position / color
 * Light
