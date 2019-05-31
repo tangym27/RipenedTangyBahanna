@@ -4,7 +4,7 @@
 * Pear shapes
 * Phong and Gouraud Shading
 * Using vary to move the light position / color
-
+* Light
 
 ### Possible image we plan to generate
 * Fist-bumping Baymax
