@@ -1,0 +1,20 @@
+notes on how to change/vary lgiht sources  + multiple light sources 
+
+- light is located in the script.py
+- draw_polygons is in draw.py
+- get_lighting is in g_math
+
+to have mutliple light sources:
+change the get lighting function to take a list of lights 
+
+to parse for human controlled light sources: 
+change parser to recognize light (and thats basically it.)
+	if c == "light":
+		light takes in 6 args [x][y][z] directions, [color,color,color]
+
+	to allow light to vary
+	- to change color:
+	vary [knob] [start_color] [end_color] [start_frame_num] [end_framenum]
+
+	- to change position:
+	just like normal.
