@@ -113,7 +113,7 @@ def add_polygon( polygons, x0, y0, z0, x1, y1, z1, x2, y2, z2 ):
     add_point(polygons, x1, y1, z1)
     add_point(polygons, x2, y2, z2)
 
-def draw_polygons( polygons, screen, zbuffer, view, ambient, light, symbols, reflect):
+def draw_polygons( polygons, screen, zbuffer, view, ambient, lights, symbols, reflect):
     if len(polygons) < 2:
         print 'Need at least 3 points to draw'
         return
@@ -126,7 +126,12 @@ def draw_polygons( polygons, screen, zbuffer, view, ambient, light, symbols, ref
         #print normal
         if normal[2] > 0:
 
-            color = get_lighting(normal, view, ambient, light, symbols, reflect )
+            color = [0,0,0]
+            for light in lights:
+                c =  get_lighting(normal, view, ambient, light, symbols, reflect )
+                color[0] += c[0]
+                color[1] += c[1]
+                color[2] += c[2]
             scanline_convert(polygons, point, screen, zbuffer, color)
 
             # draw_line( int(polygons[point][0]),
