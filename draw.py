@@ -98,16 +98,16 @@ def add_mesh(polygons, filename):
             a = verts[verts_needed[0]] 
             b = verts[verts_needed[1]] 
             c = verts[verts_needed[2]] 
-            # for i in range(len(a)):
-                # a[i] = a[i] * 2
-            # for i in range(len(b)):
-                # b[i] = b[i] * 2
-            # for i in range(len(c)):
-                # c[i] = c[i] * 2
+            for i in range(3):
+                a[i] = a[i] * 2
+            for i in range(3):
+                b[i] = b[i] * 2
+            for i in range(3):
+                c[i] = c[i] * 2
             if len(verts_needed) == 4:
                 d = verts[verts_needed[3]] 
-                # for i in range(len(d)):
-                    # d[i] = d[i] * 2
+                for i in range(3):
+                    d[i] = d[i] * 2
                 add_polygon(polygons, a[0], a[1], a[2], b[0], b[1], b[2], c[0], c[1], c[2])
                 add_polygon(polygons, a[0], a[1], a[2], c[0], c[1], c[2], d[0], d[1], d[2])
             if len(verts_needed) == 3:
