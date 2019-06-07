@@ -130,7 +130,8 @@ def run(filename):
             knob_value = 1
 
             if c == 'light':
-                print symbols[command['light']]
+                s = symbols[command['light']]
+                light = [s[1]['location'], s[1]['color']]
 
             if c == 'mesh':
                 # this is some object file
