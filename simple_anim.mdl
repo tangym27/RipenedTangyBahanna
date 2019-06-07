@@ -1,8 +1,9 @@
 frames 1
 basename baymax_test
 push
-move 250 10 0
+move 250 50 0
 
+light green 1 1 1 0 255 0
 
 mesh:baymax
 
