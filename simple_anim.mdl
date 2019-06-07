@@ -1,0 +1,8 @@
+frames 1
+basename baymax_test
+push
+move 250 250 0
+
+
+mesh:baymax
+
