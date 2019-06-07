@@ -134,44 +134,8 @@ def run(filename):
                 # this is some object file
                 if command['constants'] and command['constants'] != ":":
                     reflect = command['constants']
-                # notes on parsing obj files 
-                # "Faces are defined using lists of vertex, texture and normal indices which start at 1"
-
-                f = open(args[0], "r")
-                lines = f.read().split("\n")
-
-                verts = ["placeholder"]
-
-
-                for line in lines:
-                    tokens = line.split(" ")
-                    if tokens[0] == "v": # is a vertex
-                        coords = [float(coord) for coord in tokens[2:]]
-                        verts.append(coords)
-
-                    if tokens[0] == "f": #definings a face
-                        verts_needed = []
-                        for token in tokens[1:-1]:
-                            face_infos = token.split("/")
-                            verts_needed.append(int(face_infos[0]))
-
-                        #AS OF THIS POINT: index n of vertex contains the nth verticies, which is [x,y,z], where x y z are floats
-                        #verts_needed is a list of either 3 or 4 verticies (by number), and they are all integers
-
-                        #nowdraw in the face:
-
-                        a = verts[verts_needed[0]] 
-                        b = verts[verts_needed[1]] 
-                        c = verts[verts_needed[2]] 
-                        if len(verts_needed) == 4:
-                            d = verts[verts_needed[3]] 
-                            add_polygon(tmp, a[0], a[1], a[2], b[0], b[1], b[2], c[0], c[1], c[2])
-                            add_polygon(tmp, a[0], a[1], a[2], c[0], c[1], c[2], d[0], d[1], d[2])
-                        if len(verts_needed) == 3:
-                            add_polygon(tmp, a[0], a[1], a[2], b[0], b[1], b[2], c[0], c[1], c[2])
                 
-                # print(tmp)
-
+                add_mesh(tmp, args[0])
                 matrix_mult( stack[-1], tmp )
                 draw_polygons(tmp, screen, zbuffer, view, ambient, light, symbols, reflect)
                 tmp = []
