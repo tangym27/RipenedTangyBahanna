@@ -3,7 +3,9 @@ basename baymax_test
 push
 move 250 50 0
 
-light green 1 1 1 0 255 0
+light green 1 1 0 0 255 0
+light blue 0 1 1 0 0 255
+light red 1 0 1 255 0 0
 
 mesh:baymax
 
