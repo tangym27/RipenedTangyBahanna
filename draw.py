@@ -81,7 +81,7 @@ def add_mesh(polygons, filename):
     for line in lines:
         tokens = line.split(" ")
         if tokens[0] == "v": # is a vertex
-            coords = [float(coord) for coord in tokens[2:]]
+            coords = [5 * float(coord) for coord in tokens[2:]]
             verts.append(coords)
 
         if tokens[0] == "f": #definings a face
@@ -132,6 +132,7 @@ def draw_polygons( polygons, screen, zbuffer, view, ambient, lights, symbols, re
                 color[0] += c[0]
                 color[1] += c[1]
                 color[2] += c[2]
+            limit_color(color)
             scanline_convert(polygons, point, screen, zbuffer, color)
 
             # draw_line( int(polygons[point][0]),

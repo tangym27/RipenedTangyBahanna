@@ -37,7 +37,6 @@ def get_lighting(normal, view, ambient, light, symbols, reflect ):
     i[RED] = int(a[RED] + d[RED] + s[RED])
     i[GREEN] = int(a[GREEN] + d[GREEN] + s[GREEN])
     i[BLUE] = int(a[BLUE] + d[BLUE] + s[BLUE])
-    limit_color(i)
 
     return i
 
