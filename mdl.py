@@ -310,9 +310,13 @@ def p_command_constants(p):
     commands.append(cmd)
 
 def p_command_light(p):
-    "command : LIGHT SYMBOL NUMBER NUMBER NUMBER NUMBER NUMBER NUMBER"
+    """command : LIGHT SYMBOL NUMBER NUMBER NUMBER NUMBER NUMBER NUMBER
+               | LIGHT SYMBOL NUMBER NUMBER NUMBER NUMBER NUMBER NUMBER SYMBOL"""
     symbols[p[2]] = ['light', {'location' : p[3:6], 'color' : p[6:]}]
     cmd = {'op':p[1], 'args' : None, 'light' : p[2] }
+    if len(p) == 9:
+        symbols[p[8]] = ['knob', 0]
+        cmd['knob'] = p[8]
     commands.append(cmd)
 
 def p_command_shading(p):
