@@ -125,20 +125,37 @@ def run(filename):
             knob_value = 1
 
             if c == 'light':
-                print command
-                if command['knob']:
-                    knob_value = symbols[command["knob"]][1]
                 s = symbols[command['light']]
-                print knob_value
-                sample = s[1]['color'][:]
-                if command["knob"] == "k0":
-                    s[1]['color'][0] = min(s[1]['color'][0] * knob_value, 255)
-                    s[1]['color'][1] = min(s[1]['color'][1] * knob_value, 255)
-                    s[1]['color'][2] = min(s[1]['color'][2] * knob_value, 255)
-                print s[1]['color']
+                sample_color = s[1]['color'][:]
+                sample_location = s[1]['location'][:]
+                if command['knob']:
+                    knob1_value = symbols[command["knob"][0]][1]
+                    knob2_value = symbols[command["knob"][1]][1]
+                    # save a copy of old info..
+                    if command["knob"][0] == "k0":
+                        s[1]['color'][0] = min(s[1]['color'][0] * knob1_value, 255)
+                        s[1]['color'][1] = min(s[1]['color'][1] * knob1_value, 255)
+                        s[1]['color'][2] = min(s[1]['color'][2] * knob1_value, 255)
+                    if command["knob"][1] == "k1":
+                        s[1]['location'][0] = min(s[1]['location'][0] * knob2_value, 1)
+                        # s[1]['location'][1] = min(s[1]['location'][1] * knob2_value, 1)
+                        # s[1]['location'][2] = min(s[1]['location'][2] * knob2_value, 1)
 
-                lights.append([s[1]['location'], s[1]['color']])
-                s[1]['color'] = sample
+                to_remove = -1
+                print lights
+                for j in range(len(lights)):
+                    sym = lights[0][i][2]
+                    if sym == command['light']:
+                        to_remove = j
+                if to_remove >= 0:
+                    lights.pop(j)
+
+                print lights
+                        
+                lights.append([s[1]['location'], s[1]['color'], command['light']])
+                print lights
+                s[1]['color'] = sample_color
+                s[1]['location'] = sample_location
 
             if c == 'mesh':
                 # this is some object file
@@ -230,6 +247,7 @@ def run(filename):
 
             elif c == 'save':
                 save_extension(screen, args[0])
-
+    
         save_extension(screen,'anim/' + name + ('%03d' %int(i)))
+
     make_animation(name)

@@ -1,10 +1,9 @@
-frames 10
+frames 2 
 basename baymax_test
 push
 move 250 50 0
 
-light green 1 1 0 1 255 0 k0
+light green 1 1 0 255 255 0 
 
-vary k0 0 9 1 255
 
 mesh:baymax

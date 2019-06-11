@@ -5,6 +5,9 @@ light takes in either 10 or 14 arguments:
 light (name of light) (posiiotion args) (intensity args) (knob for position) (knob for color)
 light (name of light) (position args) (intensity args) (knob for x position) (knob for y position) (knob for z position) (knob for red) (knob for green ) (knob for blue)
 
+### Issues
+currently light keeps getting added which means that some calcualtions increase the stuff
+
 ### List of features we plan to implement.
 * Mesh
 * Phong and Gouraud Shading
