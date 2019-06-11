@@ -124,6 +124,9 @@ def run(filename):
             knob_value = 1
 
             if c == 'light':
+                print command
+                if command['knob']:
+                    knob_value = symbols[command["knob"]][1]
                 s = symbols[command['light']]
                 lights.append([s[1]['location'], s[1]['color']])
 
