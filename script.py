@@ -67,6 +67,7 @@ def second_pass( commands, num_frames ):
             for i in range(num_frames):
                 if i >= start_frame and i <= end_frame:
                     frames[i][knob] = start_value + increment * (i - start_frame)
+    print frames
     return frames
 
 
@@ -128,10 +129,16 @@ def run(filename):
                 if command['knob']:
                     knob_value = symbols[command["knob"]][1]
                 s = symbols[command['light']]
+                print knob_value
+                sample = s[1]['color'][:]
                 if command["knob"] == "k0":
-                    s[1]['color'][0] = s[1]['color'][1] * knob_value
+                    s[1]['color'][0] = min(s[1]['color'][0] * knob_value, 255)
+                    s[1]['color'][1] = min(s[1]['color'][1] * knob_value, 255)
+                    s[1]['color'][2] = min(s[1]['color'][2] * knob_value, 255)
+                print s[1]['color']
 
                 lights.append([s[1]['location'], s[1]['color']])
+                s[1]['color'] = sample
 
             if c == 'mesh':
                 # this is some object file
