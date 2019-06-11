@@ -128,6 +128,9 @@ def run(filename):
                 if command['knob']:
                     knob_value = symbols[command["knob"]][1]
                 s = symbols[command['light']]
+                if command["knob"] == "k0":
+                    s[1]['color'][0] = s[1]['color'][1] * knob_value
+
                 lights.append([s[1]['location'], s[1]['color']])
 
             if c == 'mesh':
