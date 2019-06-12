@@ -3,7 +3,7 @@ basename baymax_test
 push
 move 250 50 0
 
-light green 1 1 0 0 1 1 xcor ycor zcor red green blue
+light greenlight 1 1 0 1 1 1 xcor ycor zcor red green blue
 
 vary xcor 0 9 1 1
 vary ycor 0 9 1 1

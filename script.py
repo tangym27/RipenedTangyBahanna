@@ -125,12 +125,14 @@ def run(filename):
             knob_value = 1
 
             if c == 'light':
-                print symbols
+                # print symbols
                 s = symbols[command['light']]
-                print s
+                # print s
                 sample_color = s[1]['color'][:]
                 sample_location = s[1]['location'][:]
                 if command['knob']:
+                    
+
                     if len(command['knob']) == 2:
                         knob1_value = symbols[command["knob"][1]][1]
                         knob2_value = symbols[command["knob"][0]][1]
@@ -145,7 +147,11 @@ def run(filename):
                             s[1]['location'][0] = min(s[1]['location'][0] * knob2_value, 1)
                             s[1]['location'][1] = min(s[1]['location'][1] * knob2_value, 1)
                             s[1]['location'][2] = min(s[1]['location'][2] * knob2_value, 1)
+
+
                     elif len(command['knob']) == 6:
+
+                        
                         knob1_value = symbols[command["knob"][0]][1]
                         knob2_value = symbols[command["knob"][1]][1]
                         knob3_value = symbols[command["knob"][2]][1]
@@ -154,38 +160,42 @@ def run(filename):
                         knob6_value = symbols[command["knob"][5]][1]
                         # this is in the case where they give 6 knobs
 
+                        # print "this should print"
+                        # print knob1_value, knob4_value
+
                         if command["knob"][0][:4] == "xcor":
-                            s[1]['color'][0] = min(s[1]['color'][0] * knob1_value, 255)
+                            s[1]['location'][0] = min(s[1]['location'][0] * knob1_value, 255)
                             
                         if command["knob"][1][:4] == "ycor":
-                            s[1]['color'][1] = min(s[1]['color'][1] * knob2_value, 255)
+                            s[1]['location'][1] = min(s[1]['location'][1] * knob2_value, 255)
                         if command["knob"][2][:4] == "zcor":
-                            s[1]['color'][2] = min(s[1]['color'][2] * knob3_value, 255)
+                            s[1]['location'][2] = min(s[1]['location'][2] * knob3_value, 255)
 
                         if command["knob"][3][:3] == "red":
-                            s[1]['location'][0] = min(s[1]['location'][0] * knob4_value, 255)
+                            s[1]['color'][0] = min(s[1]['color'][0] * knob4_value, 255)
                             
                         if command["knob"][4][:5] == "green":
-                            s[1]['location'][1] = min(s[1]['location'][1] * knob5_value, 255)
+                            s[1]['color'][1] = min(s[1]['color'][1] * knob5_value, 255)
                         if command["knob"][5][:4] == "blue":
-                            s[1]['location'][2] = min(s[1]['location'][2] * knob6_value, 255)
+                            s[1]['color'][2] = min(s[1]['color'][2] * knob6_value, 255)
+                print s[1]
 
                 to_remove = -1
                 for j in range(len(lights)):
                     sym = lights[0][2]
                     if sym == command['light']:
                         to_remove = j
-                print to_remove
+                # print to_remove
 
                 if to_remove >= 0:
                     lights.pop(j)
 
-                print "after clearing the stuff"
-                print lights
+                # print "after clearing the stuff"
+                # print lights
                         
                 lights.append([s[1]['location'], s[1]['color'], command['light']])
-                print "after appending the lights"
-                print lights
+                # print "after appending the lights"
+                # print lights
                 s[1]['color'] = sample_color
                 s[1]['location'] = sample_location
 
