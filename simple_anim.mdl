@@ -1,17 +1,19 @@
-frames 10 
+frames 40 
 basename baymax_test
 push
 move 250 50 0
 
 light greenlight 1 1 0 1 1 1 xcor ycor zcor red green blue
 
+vary ycor 0 19 -1 1
+vary ycor 20 39 1 -1
 vary xcor 0 9 1 1
-vary ycor 0 9 1 1
 vary zcor 0 9 1 1
 
-vary red 0 9 255 255
-vary green 0 9 0 0 
-vary blue 0 9 0 255
+vary red 0 19 255 255 
+vary green 0 19 0 0 
+vary blue 0 19 0 255
+vary blue 20 39 255 0
 
 // vary color1 0 9 1 255
 // vary location0 0 9 0.1 1
