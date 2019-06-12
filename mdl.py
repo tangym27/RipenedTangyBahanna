@@ -311,11 +311,15 @@ def p_command_constants(p):
 
 def p_command_light(p):
     """command : LIGHT SYMBOL NUMBER NUMBER NUMBER NUMBER NUMBER NUMBER
-               | LIGHT SYMBOL NUMBER NUMBER NUMBER NUMBER NUMBER NUMBER SYMBOL SYMBOL"""
-    symbols[p[2]] = ['light', {'location' : p[3:6], 'color' : p[6:]}]
+               | LIGHT SYMBOL NUMBER NUMBER NUMBER NUMBER NUMBER NUMBER SYMBOL SYMBOL
+               | LIGHT SYMBOL NUMBER NUMBER NUMBER NUMBER NUMBER NUMBER SYMBOL SYMBOL SYMBOL SYMBOL SYMBOL SYMBOL"""
+    symbols[p[2]] = ['light', {'location' : p[3:6], 'color' : p[6:9]}]
     cmd = {'op':p[1], 'args' : None, 'knob' : None, 'light' : p[2] }
     if len(p) == 11:
         cmd['knob'] = [p[9], p[10]]
+    if len(p) == 15:
+        cmd['knob'] = [p[9], p[10], p[11], p[12], p[13], p[14]]
+    print symbols
     commands.append(cmd)
 
 def p_command_shading(p):

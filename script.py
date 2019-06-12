@@ -67,7 +67,7 @@ def second_pass( commands, num_frames ):
             for i in range(num_frames):
                 if i >= start_frame and i <= end_frame:
                     frames[i][knob] = start_value + increment * (i - start_frame)
-    print frames
+    # print frames
     return frames
 
 
@@ -125,21 +125,50 @@ def run(filename):
             knob_value = 1
 
             if c == 'light':
+                print symbols
                 s = symbols[command['light']]
+                print s
                 sample_color = s[1]['color'][:]
                 sample_location = s[1]['location'][:]
                 if command['knob']:
-                    knob1_value = symbols[command["knob"][0]][1]
-                    knob2_value = symbols[command["knob"][1]][1]
-                    # save a copy of old info..
-                    if command["knob"][0] == "k0":
-                        s[1]['color'][0] = min(s[1]['color'][0] * knob1_value, 255)
-                        s[1]['color'][1] = min(s[1]['color'][1] * knob1_value, 255)
-                        s[1]['color'][2] = min(s[1]['color'][2] * knob1_value, 255)
-                    if command["knob"][1] == "k1":
-                        s[1]['location'][0] = min(s[1]['location'][0] * knob2_value, 1)
-                        # s[1]['location'][1] = min(s[1]['location'][1] * knob2_value, 1)
-                        # s[1]['location'][2] = min(s[1]['location'][2] * knob2_value, 1)
+                    if len(command['knob']) == 2:
+                        knob1_value = symbols[command["knob"][1]][1]
+                        knob2_value = symbols[command["knob"][0]][1]
+                        # save a copy of old info..
+
+                        #this is in the case where they only give 2 knobs
+                        if command["knob"][1][:5] == "color":
+                            s[1]['color'][0] = min(s[1]['color'][0] * knob1_value, 255)
+                            s[1]['color'][1] = min(s[1]['color'][1] * knob1_value, 255)
+                            s[1]['color'][2] = min(s[1]['color'][2] * knob1_value, 255)
+                        if command["knob"][0][:8] == "location":
+                            s[1]['location'][0] = min(s[1]['location'][0] * knob2_value, 1)
+                            s[1]['location'][1] = min(s[1]['location'][1] * knob2_value, 1)
+                            s[1]['location'][2] = min(s[1]['location'][2] * knob2_value, 1)
+                    elif len(command['knob']) == 6:
+                        knob1_value = symbols[command["knob"][0]][1]
+                        knob2_value = symbols[command["knob"][1]][1]
+                        knob3_value = symbols[command["knob"][2]][1]
+                        knob4_value = symbols[command["knob"][3]][1]
+                        knob5_value = symbols[command["knob"][4]][1]
+                        knob6_value = symbols[command["knob"][5]][1]
+                        # this is in the case where they give 6 knobs
+
+                        if command["knob"][0][:4] == "xcor":
+                            s[1]['color'][0] = min(s[1]['color'][0] * knob1_value, 255)
+                            
+                        if command["knob"][1][:4] == "ycor":
+                            s[1]['color'][1] = min(s[1]['color'][1] * knob2_value, 255)
+                        if command["knob"][2][:4] == "zcor":
+                            s[1]['color'][2] = min(s[1]['color'][2] * knob3_value, 255)
+
+                        if command["knob"][3][:3] == "red":
+                            s[1]['location'][0] = min(s[1]['location'][0] * knob4_value, 255)
+                            
+                        if command["knob"][4][:5] == "green":
+                            s[1]['location'][1] = min(s[1]['location'][1] * knob5_value, 255)
+                        if command["knob"][5][:4] == "blue":
+                            s[1]['location'][2] = min(s[1]['location'][2] * knob6_value, 255)
 
                 to_remove = -1
                 for j in range(len(lights)):
