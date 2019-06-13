@@ -196,24 +196,24 @@ def run(filename):
                             s[1]['color'][2] = min(s[1]['color'][2] * knob6_value, 255)
                 # print s[1]
 
-                to_remove = -1
+                to_remove = [] 
                 for j in range(len(lights)):
                     sym = lights[0][2]
                     if sym == command['light']:
-                        to_remove = j
+                        to_remove.append(j)
                 # print to_remove
 
-                if to_remove >= 0:
-                    bob +=1
-                    # COMMENTED THIS OUT
-                    lights.pop(j)
+                offset = 0
+                for thing in to_remove:
+                    lights.pop(thing - offset)
+                    offset += 1
 
-                # print "after clearing the stuff"
-                # print lights
+                print "after clearing the stuff"
+                print lights
                 #COMMENTED THIS OUT
                 lights.append([s[1]['location'], s[1]['color'], command['light']])
-                # print "after appending the lights"
-                # print lights
+                print "after appending the lights"
+                print lights
                 s[1]['color'] = sample_color
                 s[1]['location'] = sample_location
 
