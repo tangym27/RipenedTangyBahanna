@@ -18,25 +18,32 @@ def first_pass( commands ):
     isFrame = 0
     name = ''
     num_frames = 1
+    shade_type = ""
 
     for command in commands:
+        print command
         cmd = command['op']
         args = command['args']
-        # print cmd
-        # print args
+
         if cmd == "frames":
             num_frames = int(command["args"][0])
             isFrame = 1
         elif cmd == "basename":
             name = command["args"][0]
+        elif cmd == "shading":
+            print "hi"
+            shade_type = command["shade_type"]
+            print shade_type
+
+
     if not isFrame:
         print("Vary is found but frames is not so the entire program is exiting...")
         exit(0)
     if isFrame and not len(name):
         name  = "base"
         print("Frame is found but basename is not, the basename is now base...")
-
-    return [name, num_frames]
+    # print shade_type
+    return [name, num_frames, shade_type]
 
 """======== second_pass( commands ) ==========
   In order to set the knobs for animation, we need to keep
@@ -72,6 +79,7 @@ def second_pass( commands, num_frames ):
 
 
 def run(filename):
+    bob = 0
     """
     This function runs an mdl script
     """
@@ -89,7 +97,14 @@ def run(filename):
     ambient = [50,
                50,
                50]
-    lights = [] # 
+    lights = []
+    # lights = [[0.5,
+    # 0.75,
+    # 1],
+    # [255,
+    # 255,
+    # 255]]
+
     color = [0, 0, 0]
     symbols['.white'] = ['constants',
                          {'red': [0.2, 0.5, 0.5],
@@ -97,12 +112,13 @@ def run(filename):
                           'blue': [0.2, 0.5, 0.5]}]
     reflect = '.white'
 
-    [name, num_frames] = first_pass(commands)
+    [name, num_frames, shade_type] = first_pass(commands)
     knobs = second_pass(commands, num_frames)
 
 
     for i in range(int(num_frames)):
         print ("Pic " + str(i))
+        print(shade_type)
         tmp = new_matrix()
         ident( tmp )
 
@@ -131,7 +147,7 @@ def run(filename):
                 sample_color = s[1]['color'][:]
                 sample_location = s[1]['location'][:]
                 if command['knob']:
-                    
+
 
                     if len(command['knob']) == 2:
                         knob1_value = symbols[command["knob"][1]][1]
@@ -151,7 +167,7 @@ def run(filename):
 
                     elif len(command['knob']) == 6:
 
-                        
+
                         knob1_value = symbols[command["knob"][0]][1]
                         knob2_value = symbols[command["knob"][1]][1]
                         knob3_value = symbols[command["knob"][2]][1]
@@ -165,7 +181,7 @@ def run(filename):
 
                         if command["knob"][0][:4] == "xcor":
                             s[1]['location'][0] = min(s[1]['location'][0] * knob1_value, 255)
-                            
+
                         if command["knob"][1][:4] == "ycor":
                             s[1]['location'][1] = min(s[1]['location'][1] * knob2_value, 255)
                         if command["knob"][2][:4] == "zcor":
@@ -173,12 +189,12 @@ def run(filename):
 
                         if command["knob"][3][:3] == "red":
                             s[1]['color'][0] = min(s[1]['color'][0] * knob4_value, 255)
-                            
+
                         if command["knob"][4][:5] == "green":
                             s[1]['color'][1] = min(s[1]['color'][1] * knob5_value, 255)
                         if command["knob"][5][:4] == "blue":
                             s[1]['color'][2] = min(s[1]['color'][2] * knob6_value, 255)
-                print s[1]
+                # print s[1]
 
                 to_remove = -1
                 for j in range(len(lights)):
@@ -188,11 +204,13 @@ def run(filename):
                 # print to_remove
 
                 if to_remove >= 0:
+                    bob +=1
+                    # COMMENTED THIS OUT
                     lights.pop(j)
 
                 # print "after clearing the stuff"
                 # print lights
-                        
+                #COMMENTED THIS OUT
                 lights.append([s[1]['location'], s[1]['color'], command['light']])
                 # print "after appending the lights"
                 # print lights
@@ -203,10 +221,10 @@ def run(filename):
                 # this is some object file
                 if command['constants'] and command['constants'] != ":":
                     reflect = command['constants']
-                
+
                 add_mesh(tmp, args[0])
                 matrix_mult( stack[-1], tmp )
-                draw_polygons(tmp, screen, zbuffer, view, ambient, lights, symbols, reflect)
+                draw_polygons(tmp, screen, zbuffer, shade_type, view, ambient, lights, symbols, reflect)
                 tmp = []
                 reflect = '.white'
 
@@ -217,7 +235,7 @@ def run(filename):
                         args[0], args[1], args[2],
                         args[3], args[4], args[5])
                 matrix_mult( stack[-1], tmp )
-                draw_polygons(tmp, screen, zbuffer, view, ambient, lights, symbols, reflect)
+                draw_polygons(tmp, screen, zbuffer, shade_type, view, ambient, lights, symbols, reflect)
                 tmp = []
                 reflect = '.white'
 
@@ -227,7 +245,7 @@ def run(filename):
                 add_sphere(tmp,
                            args[0], args[1], args[2], args[3], step_3d)
                 matrix_mult( stack[-1], tmp )
-                draw_polygons(tmp, screen, zbuffer, view, ambient, lights, symbols, reflect)
+                draw_polygons(tmp, screen, zbuffer, shade_type, view, ambient, lights, symbols, reflect)
                 tmp = []
                 reflect = '.white'
 
@@ -237,7 +255,7 @@ def run(filename):
                 add_torus(tmp,
                           args[0], args[1], args[2], args[3], args[4], step_3d)
                 matrix_mult( stack[-1], tmp )
-                draw_polygons(tmp, screen, zbuffer, view, ambient, lights, symbols, reflect)
+                draw_polygons(tmp, screen, zbuffer, shade_type, view, ambient, lights, symbols, reflect)
                 tmp = []
                 reflect = '.white'
 
@@ -289,7 +307,7 @@ def run(filename):
 
             elif c == 'save':
                 save_extension(screen, args[0])
-    
+
         save_extension(screen,'anim/' + name + ('%03d' %int(i)))
 
     make_animation(name)

@@ -25,7 +25,7 @@ def get_lighting(normal, view, ambient, light, symbols, reflect ):
 
     n = normal[:]
     normalize(n)
-    normalize(light[0][LOCATION])
+    normalize(light[LOCATION])
     normalize(view)
     r = symbols[reflect][1]
 
@@ -50,30 +50,30 @@ def calculate_ambient(alight, reflect):
 def calculate_diffuse(light, reflect, normal):
     d = [0, 0, 0]
 
-    dot = dot_product( light[0][LOCATION], normal)
+    dot = dot_product( light[LOCATION], normal)
 
     dot = dot if dot > 0 else 0
-    d[RED] = light[0][COLOR][RED] * reflect['red'][DIFFUSE] * dot
-    d[GREEN] = light[0][COLOR][GREEN] * reflect['green'][DIFFUSE] * dot
-    d[BLUE] = light[0][COLOR][BLUE] * reflect['blue'][DIFFUSE] * dot
+    d[RED] = light[COLOR][RED] * reflect['red'][DIFFUSE] * dot
+    d[GREEN] = light[COLOR][GREEN] * reflect['green'][DIFFUSE] * dot
+    d[BLUE] = light[COLOR][BLUE] * reflect['blue'][DIFFUSE] * dot
     return d
 
 def calculate_specular(light, reflect, view, normal):
     s = [0, 0, 0]
     n = [0, 0, 0]
 
-    result = 2 * dot_product(light[0][LOCATION], normal)
-    n[0] = (normal[0] * result) - light[0][LOCATION][0]
-    n[1] = (normal[1] * result) - light[0][LOCATION][1]
-    n[2] = (normal[2] * result) - light[0][LOCATION][2]
+    result = 2 * dot_product(light[LOCATION], normal)
+    n[0] = (normal[0] * result) - light[LOCATION][0]
+    n[1] = (normal[1] * result) - light[LOCATION][1]
+    n[2] = (normal[2] * result) - light[LOCATION][2]
 
     result = dot_product(n, view)
     result = result if result > 0 else 0
     result = pow( result, SPECULAR_EXP )
 
-    s[RED] = light[0][COLOR][RED] * reflect['red'][SPECULAR] * result
-    s[GREEN] = light[0][COLOR][GREEN] * reflect['green'][SPECULAR] * result
-    s[BLUE] = light[0][COLOR][BLUE] * reflect['blue'][SPECULAR] * result
+    s[RED] = light[COLOR][RED] * reflect['red'][SPECULAR] * result
+    s[GREEN] = light[COLOR][GREEN] * reflect['green'][SPECULAR] * result
+    s[BLUE] = light[COLOR][BLUE] * reflect['blue'][SPECULAR] * result
     return s
 
 def limit_color(color):
@@ -130,3 +130,9 @@ def avg_norms(norms):
 
 def const_multi(const, vec):
     return [const*x for x in vec]
+
+def vect_add(vec1,vec2):
+    vec1[0] += vec2[0]
+    vec1[1] += vec2[1]
+    vec1[2] += vec2[2]
+    return vec1

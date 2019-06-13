@@ -2,75 +2,8 @@ from display import *
 from matrix import *
 from gmath import *
 
-def draw_scanline(x0, z0, x1, z1, y, screen, zbuffer, color):
-    if x0 > x1:
-        tx = x0
-        tz = z0
-        x0 = x1
-        z0 = z1
-        x1 = tx
-        z1 = tz
-
-    x = x0
-    z = z0
-    delta_z = (z1 - z0) / (x1 - x0 + 1) if (x1 - x0 + 1) != 0 else 0
-
-    while x <= x1:
-        plot(screen, zbuffer, color, x, y, z)
-        x+= 1
-        z+= delta_z
-
-def scanline_convert(polygons, i, screen, zbuffer, color):
-    flip = False
-    BOT = 0
-    TOP = 2
-    MID = 1
-
-    points = [ (polygons[i][0], polygons[i][1], polygons[i][2]),
-               (polygons[i+1][0], polygons[i+1][1], polygons[i+1][2]),
-               (polygons[i+2][0], polygons[i+2][1], polygons[i+2][2]) ]
-
-    # alas random color, we hardly knew ye
-    #color = [0,0,0]
-    #color[RED] = (23*(i/3)) %256
-    #color[GREEN] = (109*(i/3)) %256
-    #color[BLUE] = (227*(i/3)) %256
-
-    points.sort(key = lambda x: x[1])
-    x0 = points[BOT][0]
-    z0 = points[BOT][2]
-    x1 = points[BOT][0]
-    z1 = points[BOT][2]
-    y = int(points[BOT][1])
-
-    distance0 = int(points[TOP][1]) - y * 1.0 + 1
-    distance1 = int(points[MID][1]) - y * 1.0 + 1
-    distance2 = int(points[TOP][1]) - int(points[MID][1]) * 1.0 + 1
-
-    dx0 = (points[TOP][0] - points[BOT][0]) / distance0 if distance0 != 0 else 0
-    dz0 = (points[TOP][2] - points[BOT][2]) / distance0 if distance0 != 0 else 0
-    dx1 = (points[MID][0] - points[BOT][0]) / distance1 if distance1 != 0 else 0
-    dz1 = (points[MID][2] - points[BOT][2]) / distance1 if distance1 != 0 else 0
-
-    while y <= int(points[TOP][1]):
-        if ( not flip and y >= int(points[MID][1])):
-            flip = True
-
-            dx1 = (points[TOP][0] - points[MID][0]) / distance2 if distance2 != 0 else 0
-            dz1 = (points[TOP][2] - points[MID][2]) / distance2 if distance2 != 0 else 0
-            x1 = points[MID][0]
-            z1 = points[MID][2]
-
-        #draw_line(int(x0), y, z0, int(x1), y, z1, screen, zbuffer, color)
-        draw_scanline(int(x0), z0, int(x1), z1, y, screen, zbuffer, color)
-        x0+= dx0
-        z0+= dz0
-        x1+= dx1
-        z1+= dz1
-        y+= 1
-
 def add_mesh(polygons, filename):
-                # notes on parsing obj files 
+                # notes on parsing obj files
                 # "Faces are defined using lists of vertex, texture and normal indices which start at 1"
     f = open(filename, "r")
     lines = f.read().split("\n")
@@ -95,17 +28,144 @@ def add_mesh(polygons, filename):
 
             #nowdraw in the face:
 
-            a = verts[verts_needed[0]] 
-            b = verts[verts_needed[1]] 
-            c = verts[verts_needed[2]] 
+            a = verts[verts_needed[0]]
+            b = verts[verts_needed[1]]
+            c = verts[verts_needed[2]]
             if len(verts_needed) == 4:
-                d = verts[verts_needed[3]] 
+                d = verts[verts_needed[3]]
                 add_polygon(polygons, a[0], a[1], a[2], b[0], b[1], b[2], c[0], c[1], c[2])
                 add_polygon(polygons, a[0], a[1], a[2], c[0], c[1], c[2], d[0], d[1], d[2])
             if len(verts_needed) == 3:
                 add_polygon(polygons, a[0], a[1], a[2], b[0], b[1], b[2], c[0], c[1], c[2])
-    
-    # print(tmp)
+
+def draw_scanline(x0, z0, x1, z1, y, screen, zbuffer, color, shading, vertices, view, ambient, light, symbols, reflect):
+    # print vertices
+    # exit()
+    if x0 > x1:
+        tx = x0
+        tz = z0
+        x0 = x1
+        z0 = z1
+        x1 = tx
+        z1 = tz
+        # SWITCH EVERYTHING >:( )
+        if shading == 'gouraud' or shading == 'phong':
+            vertices = [vertices[1], vertices[0]]
+
+    x = x0
+    z = z0
+    if shading != 'flat':
+        r = vertices[0][0]
+        g = vertices[0][1]
+        b = vertices[0][2]
+        #changes in the vertices
+        dxr = (vertices[1][0] - vertices[0][0]) / (x1 - x0 + 1) if (x1 - x0 + 1) != 0 else 0
+        dyg = (vertices[1][1] - vertices[0][1]) / (x1 - x0 + 1) if (x1 - x0 + 1) != 0 else 0
+        dzb = (vertices[1][2] - vertices[0][2]) / (x1 - x0 + 1) if (x1 - x0 + 1) != 0 else 0
+
+    while x <= x1:
+        if shading == 'gouraud':
+            gcolor = [ int(r), int(g), int(b)]
+            plot(screen, zbuffer, gcolor, x, y, z)
+        elif shading == 'phong':
+            pcolor = get_lighting([r,g,b] , view, ambient, light, symbols, reflect )
+            plot(screen, zbuffer, pcolor, x, y, z)
+        else:
+            # flat
+            plot(screen, zbuffer, color, x, y, z)
+
+        x+= 1
+        z+= (z1 - z0) / (x1 - x0 + 1) if (x1 - x0 + 1) != 0 else 0
+
+        # update values based on those slopes
+        if shading == 'gouraud' or shading == 'phong':
+            r += dxr
+            g += dyg
+            b += dzb
+
+def scanline_convert(polygons, point, screen, zbuffer, end_vert, shading, view, ambient, light, symbols, reflect):
+    # print point
+    flip = False
+    BOT = 0
+    TOP = 2
+    MID = 1
+    END = 3
+
+    points = [ (polygons[point][0], polygons[point][1], polygons[point][2], end_vert[0] ),
+               (polygons[point+1][0], polygons[point+1][1], polygons[point+1][2], end_vert[1]),
+               (polygons[point+2][0], polygons[point+2][1], polygons[point+2][2], end_vert[2]) ]
+
+    points.sort(key = lambda y: y[1])
+    x0 = points[BOT][0]
+    z0 = points[BOT][2]
+    x1 = points[BOT][0]
+    z1 = points[BOT][2]
+    y = int(points[BOT][1])
+
+    distance0 = int(points[TOP][1]) - y * 1.0 + 1
+    distance1 = int(points[MID][1]) - y * 1.0 + 1
+    distance2 = int(points[TOP][1]) - int(points[MID][1]) * 1.0 + 1
+
+    dx0 = (points[TOP][0] - points[BOT][0]) / distance0 if distance0 != 0 else 0
+    dz0 = (points[TOP][2] - points[BOT][2]) / distance0 if distance0 != 0 else 0
+    dx1 = (points[MID][0] - points[BOT][0]) / distance1 if distance1 != 0 else 0
+    dz1 = (points[MID][2] - points[BOT][2]) / distance1 if distance1 != 0 else 0
+
+    if shading != 'flat':
+        xr0 = points[BOT][END][0]
+        yg0 = points[BOT][END][1]
+        zb0 = points[BOT][END][2]
+        xr1 = points[BOT][END][0]
+        yg1 = points[BOT][END][1]
+        zb1 = points[BOT][END][2]
+
+        dxr0 = (points[TOP][3][0] - xr0) / distance0 if distance0 != 0 else 0
+        dyg0 = (points[TOP][3][1] - yg0) / distance0 if distance0 != 0 else 0
+        dzb0 = (points[TOP][3][2] - zb0) / distance0 if distance0 != 0 else 0
+        dxr1 = (points[MID][3][0] - points[BOT][3][0]) / distance1 if distance1 != 0 else 0
+        dyg1 = (points[MID][3][1] - points[BOT][3][1]) / distance1 if distance1 != 0 else 0
+        dzb1 = (points[MID][3][2] - points[BOT][3][2]) / distance1 if distance1 != 0 else 0
+
+    while y <= int(points[TOP][1]):
+        if ( not flip and y >= int(points[MID][1])):
+            flip = not flip
+
+            dx1 = (points[TOP][0] - points[MID][0]) / distance2 if distance2 != 0 else 0
+            dz1 = (points[TOP][2] - points[MID][2]) / distance2 if distance2 != 0 else 0
+            x1 = points[MID][0]
+            z1 = points[MID][2]
+
+
+            if shading != 'flat':
+                dxr1 = (points[TOP][3][0] - points[MID][3][0]) / distance2 if distance2 != 0 else 0
+                dyg1 = (points[TOP][3][1] - points[MID][3][1]) / distance2 if distance2 != 0 else 0
+                dzb1 = (points[TOP][3][2] - points[MID][3][2]) / distance2 if distance2 != 0 else 0
+                xr1 = points[MID][3][0]
+                yg1 = points[MID][3][1]
+                zb1 = points[MID][3][2]
+
+
+
+        color = end_vert[0] if shading == 'flat' else None
+        vertices = [[xr0, yg0, zb0], [xr1, yg1, zb1]] if shading != 'flat' else []
+        #draw_line(int(x0), y, z0, int(x1), y, z1, screen, zbuffer, color)
+        draw_scanline(int(x0), z0, int(x1), z1, y, screen, zbuffer, color, shading, vertices, view, ambient, light, symbols, reflect)
+
+        x0+= dx0
+        z0+= dz0
+        x1+= dx1
+        z1+= dz1
+
+        if shading != 'flat':
+            xr0 += dxr0
+            yg0 += dyg0
+            zb0 += dzb0
+            xr1 += dxr1
+            yg1 += dyg1
+            zb1 += dzb1
+        y+= 1
+
+
 
 
 def add_polygon( polygons, x0, y0, z0, x1, y1, z1, x2, y2, z2 ):
@@ -113,10 +173,33 @@ def add_polygon( polygons, x0, y0, z0, x1, y1, z1, x2, y2, z2 ):
     add_point(polygons, x1, y1, z1)
     add_point(polygons, x2, y2, z2)
 
-def draw_polygons( polygons, screen, zbuffer, view, ambient, lights, symbols, reflect):
+def draw_polygons( polygons, screen, zbuffer, shading, view, ambient, light, symbols, reflect):
     if len(polygons) < 2:
-        print 'Need at least 3 points to draw'
+        print ('Need at least 3 points to draw')
         return
+
+    if shading != 'flat':
+        norms = {}
+        point = 0
+        for point in polygons:
+            norms[tuple(point)] = [0,0,0]
+        point = 0
+        while point < len(polygons) - 2:
+            k = 0
+            normal = calculate_normal(polygons, point)
+            normalize(normal)
+            while (k < 3):
+                # print k
+                # print"done"
+                norms[tuple(polygons[point])][k] += normal[k]
+                norms[tuple(polygons[point+1])][k] += normal[k]
+                norms[tuple(polygons[point+2])][k] += normal[k]
+                k += 1
+            point += 3
+
+        for key in norms.keys():
+            normalize(norms[key])
+        # print norms
 
     point = 0
     while point < len(polygons) - 2:
@@ -125,37 +208,30 @@ def draw_polygons( polygons, screen, zbuffer, view, ambient, lights, symbols, re
 
         #print normal
         if normal[2] > 0:
+            if shading == 'flat':
+                color = get_lighting(normal, view, ambient, light, symbols, reflect )
+                colors = [color,color,color]
+                scanline_convert(polygons, point, screen, zbuffer, colors,
+                        shading, view, ambient, light, symbols, reflect)
+            else:
+                norm0 = norms[tuple(polygons[point])]
+                norm1 = norms[tuple(polygons[point+1])]
+                norm2 = norms[tuple(polygons[point+2])]
 
-            color = [0,0,0]
-            for light in lights:
-                c =  get_lighting(normal, view, ambient, light, symbols, reflect )
-                color[0] += c[0]
-                color[1] += c[1]
-                color[2] += c[2]
-            limit_color(color)
-            scanline_convert(polygons, point, screen, zbuffer, color)
+                if shading == 'gouraud':
 
-            # draw_line( int(polygons[point][0]),
-            #            int(polygons[point][1]),
-            #            polygons[point][2],
-            #            int(polygons[point+1][0]),
-            #            int(polygons[point+1][1]),
-            #            polygons[point+1][2],
-            #            screen, zbuffer, color)
-            # draw_line( int(polygons[point+2][0]),
-            #            int(polygons[point+2][1]),
-            #            polygons[point+2][2],
-            #            int(polygons[point+1][0]),
-            #            int(polygons[point+1][1]),
-            #            polygons[point+1][2],
-            #            screen, zbuffer, color)
-            # draw_line( int(polygons[point][0]),
-            #            int(polygons[point][1]),
-            #            polygons[point][2],
-            #            int(polygons[point+2][0]),
-            #            int(polygons[point+2][1]),
-            #            polygons[point+2][2],
-            #            screen, zbuffer, color)
+                    v0_color = get_lighting(norm0, view, ambient, light, symbols, reflect )
+                    v1_color = get_lighting(norm1, view, ambient, light, symbols, reflect )
+                    v2_color = get_lighting(norm2, view, ambient, light, symbols, reflect )
+
+                    colors = [v0_color, v1_color, v2_color]
+                    scanline_convert(polygons, point, screen, zbuffer, colors, shading, view, ambient, light, symbols, reflect)
+
+                if shading == 'phong':
+
+                    normals = [norm0, norm1, norm2]
+                    scanline_convert(polygons, point, screen, zbuffer, normals, shading, view, ambient, light, symbols, reflect)
+
         point+= 3
 
 
@@ -343,7 +419,7 @@ def add_curve( points, x0, y0, x1, y1, x2, y2, x3, y3, step, curve_type ):
 
 def draw_lines( matrix, screen, zbuffer, color ):
     if len(matrix) < 2:
-        print 'Need at least 2 points to draw'
+        print ('Need at least 2 points to draw')
         return
 
     point = 0
@@ -409,7 +485,7 @@ def draw_line( x0, y0, z0, x1, y1, z1, screen, zbuffer, color ):
         tall = True
         dx_east = 0
         dx_northeast = 1
-        distance = abs(y1 - y) + 1
+        distance= abs(y1 - y) + 1
         if ( A > 0 ): #octant 2
             d = A/2 + B
             dy_east = dy_northeast = 1
@@ -425,7 +501,7 @@ def draw_line( x0, y0, z0, x1, y1, z1, screen, zbuffer, color ):
             loop_start = y1
             loop_end = y
 
-    dz = (z1 - z0) / distance if distance != 0 else 0
+    dz = (z1 - z0) / (x1 - x0 + 1) if (x1 - x0 + 1) != 0 else 0
 
     while ( loop_start < loop_end ):
         plot( screen, zbuffer, color, x, y, z )
