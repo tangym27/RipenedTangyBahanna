@@ -1,0 +1,15 @@
+frames 1 
+basename baymax_test
+push
+move 250 50 0
+
+light baa 0 1 0 255 0 0 
+light yee 1 0 0 0 255 0 
+
+
+// vary color1 0 9 1 255
+// vary location0 0 9 0.1 1
+
+shading phong 
+mesh:baymac
+

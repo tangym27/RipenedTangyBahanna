@@ -68,10 +68,16 @@ def draw_scanline(x0, z0, x1, z1, y, screen, zbuffer, color, shading, vertices, 
             gcolor = [ int(r), int(g), int(b)]
             plot(screen, zbuffer, gcolor, x, y, z)
         elif shading == 'phong':
-            pcolor = get_lighting([r,g,b] , view, ambient, light, symbols, reflect )
-            plot(screen, zbuffer, pcolor, x, y, z)
+            ppcolor = [0,0,0]
+            for lit in light:
+                pcolor = get_lighting([r,g,b] , view, ambient, lit, symbols, reflect )
+                ppcolor[0] += pcolor[0]
+                ppcolor[1] += pcolor[1]
+                ppcolor[2] += pcolor[2]
+            plot(screen, zbuffer, ppcolor, x, y, z)
         else:
             # flat
+            print color
             plot(screen, zbuffer, color, x, y, z)
 
         x+= 1
@@ -146,7 +152,7 @@ def scanline_convert(polygons, point, screen, zbuffer, end_vert, shading, view, 
 
 
 
-        color = end_vert[0] if shading == 'flat' else None
+        color = end_vert if shading == 'flat' else None
         vertices = [[xr0, yg0, zb0], [xr1, yg1, zb1]] if shading != 'flat' else []
         #draw_line(int(x0), y, z0, int(x1), y, z1, screen, zbuffer, color)
         draw_scanline(int(x0), z0, int(x1), z1, y, screen, zbuffer, color, shading, vertices, view, ambient, light, symbols, reflect)
@@ -173,7 +179,7 @@ def add_polygon( polygons, x0, y0, z0, x1, y1, z1, x2, y2, z2 ):
     add_point(polygons, x1, y1, z1)
     add_point(polygons, x2, y2, z2)
 
-def draw_polygons( polygons, screen, zbuffer, shading, view, ambient, light, symbols, reflect):
+def draw_polygons( polygons, screen, zbuffer, shading, view, ambient, lights, symbols, reflect):
     if len(polygons) < 2:
         print ('Need at least 3 points to draw')
         return
@@ -209,28 +215,42 @@ def draw_polygons( polygons, screen, zbuffer, shading, view, ambient, light, sym
         #print normal
         if normal[2] > 0:
             if shading == 'flat':
-                color = get_lighting(normal, view, ambient, light, symbols, reflect )
-                colors = [color,color,color]
+                colors = [0,0,0]
+                for light in lights:
+                    c =  get_lighting(normal, view, ambient, light, symbols, reflect )
+                    colors[0] += c[0]
+                    colors[1] += c[1]
+                    colors[2] += c[2]
                 scanline_convert(polygons, point, screen, zbuffer, colors,
                         shading, view, ambient, light, symbols, reflect)
+
             else:
                 norm0 = norms[tuple(polygons[point])]
                 norm1 = norms[tuple(polygons[point+1])]
                 norm2 = norms[tuple(polygons[point+2])]
 
                 if shading == 'gouraud':
+                    colors = [[0,0,0],[0,0,0],[0,0,0]]
+                    for light in lights:
+                        v0_color = get_lighting(norm0, view, ambient, light, symbols, reflect )
+                        v1_color = get_lighting(norm1, view, ambient, light, symbols, reflect )
+                        v2_color = get_lighting(norm2, view, ambient, light, symbols, reflect )
+                        colors[0][0] += v0_color[0]
+                        colors[0][1] += v0_color[1]
+                        colors[0][2] += v0_color[2]
+                        colors[1][0] += v1_color[0]
+                        colors[1][1] += v1_color[1]
+                        colors[1][2] += v1_color[2]
+                        colors[2][0] += v2_color[0]
+                        colors[2][1] += v2_color[1]
+                        colors[2][2] += v2_color[2]
 
-                    v0_color = get_lighting(norm0, view, ambient, light, symbols, reflect )
-                    v1_color = get_lighting(norm1, view, ambient, light, symbols, reflect )
-                    v2_color = get_lighting(norm2, view, ambient, light, symbols, reflect )
-
-                    colors = [v0_color, v1_color, v2_color]
                     scanline_convert(polygons, point, screen, zbuffer, colors, shading, view, ambient, light, symbols, reflect)
 
                 if shading == 'phong':
 
                     normals = [norm0, norm1, norm2]
-                    scanline_convert(polygons, point, screen, zbuffer, normals, shading, view, ambient, light, symbols, reflect)
+                    scanline_convert(polygons, point, screen, zbuffer, normals, shading, view, ambient, lights, symbols, reflect)
 
         point+= 3
 

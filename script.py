@@ -21,7 +21,7 @@ def first_pass( commands ):
     shade_type = ""
 
     for command in commands:
-        print command
+        # print command
         cmd = command['op']
         args = command['args']
 
@@ -31,9 +31,9 @@ def first_pass( commands ):
         elif cmd == "basename":
             name = command["args"][0]
         elif cmd == "shading":
-            print "hi"
+            # print "hi"
             shade_type = command["shade_type"]
-            print shade_type
+            # print shade_type
 
 
     if not isFrame:
@@ -216,6 +216,9 @@ def run(filename):
                 # print lights
                 s[1]['color'] = sample_color
                 s[1]['location'] = sample_location
+
+                print "these are the lights"
+                print lights
 
             if c == 'mesh':
                 # this is some object file
