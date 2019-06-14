@@ -1,20 +1,21 @@
-frames 40
-basename baymax_test
+frames 20
+basename baymax_test3
 push
 move 250 50 0
 
 light greenlight 1 1 0 1 1 1 xcor ycor zcor red green blue
 light othergreenlight 1 1 0 1 1 1 xcor1 ycor1 zcor1 red1 green1 blue1
+light othergreenlight 1 1 0 1 1 1 xcor2 ycor2 zcor2 red2 green2 blue2
 
-vary ycor 0 19 -1 1
-vary ycor 20 39 1 -1
-vary xcor 0 9 1 1
-vary zcor 0 9 1 1
+vary ycor 0 9 -1 1
+vary ycor 10 19 1 -1
+vary xcor 0 19 1 1
+vary zcor 0 19 1 1
 
 vary red 0 19 255 255
 vary green 0 19 0 0
-vary blue 0 19 0 255
-vary blue 20 39 255 0
+vary blue 0 9 0 255
+vary blue 10 19 255 0
 
 vary xcor1 0 19 -1 1
 vary xcor1 20 39 1 -1
@@ -26,9 +27,26 @@ vary red1 0 19 0 0
 vary blue1 0 19 0 255
 vary blue1 20 39 255 0
 
+vary xcor2 0 19 -1 1
+vary xcor2 20 39 1 -1
+vary ycor2 0 9 1 1
+vary zcor2 0 9 1 1
+
+vary green2 0 19 105 155
+vary red2 0 19 0 0
+vary blue2 0 19 0 255
+vary blue2 20 39 255 0
+
+
 
 // vary color1 0 9 1 255
 // vary location0 0 9 0.1 1
 
-shading phong 
+
+move 400 0 0 movie
+move 0 150 0 movie2
+
+shading phong
 mesh:baymac
+vary movie 0 19 0 1
+vary movie2 0 19 0 1

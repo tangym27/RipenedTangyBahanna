@@ -107,9 +107,9 @@ def run(filename):
 
     color = [0, 0, 0]
     symbols['.white'] = ['constants',
-                         {'red': [0.2, 0.5, 0.5],
-                        'green': [0.2, 0.5, 0.5],
-                          'blue': [0.2, 0.5, 0.5]}]
+                         {'red': [0.2, 1, 0.5],
+                        'green': [0.2, 1, 0.5],
+                          'blue': [0.2, 1, 0.5]}]
     reflect = '.white'
 
     [name, num_frames, shade_type] = first_pass(commands)
@@ -196,7 +196,7 @@ def run(filename):
                             s[1]['color'][2] = min(s[1]['color'][2] * knob6_value, 255)
                 # print s[1]
 
-                to_remove = [] 
+                to_remove = []
                 for j in range(len(lights)):
                     sym = lights[0][2]
                     if sym == command['light']:
