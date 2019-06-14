@@ -1,52 +1,58 @@
-frames 20
+frames 30
 basename baymax_test3
 push
 move 250 50 0
 
+// Testing multiple lights, for quicker generation comment a light out
 light greenlight 1 1 0 1 1 1 xcor ycor zcor red green blue
-light othergreenlight 1 1 0 1 1 1 xcor1 ycor1 zcor1 red1 green1 blue1
-light othergreenlight 1 1 0 1 1 1 xcor2 ycor2 zcor2 red2 green2 blue2
+light bluelight 1 1 0 1 1 1 xcor1 ycor1 zcor1 red1 green1 blue1
+light pinklight 1 1 0 1 1 1 xcor2 ycor2 zcor2 red2 green2 blue2
 
-vary ycor 0 9 -1 1
-vary ycor 10 19 1 -1
-vary xcor 0 19 1 1
-vary zcor 0 19 1 1
+// Using vary with lights
+vary ycor 0 29 -1 1
+vary ycor 10 29 1 -1
+vary xcor 0 29 -1 1
+vary zcor 0 29 1 1
 
-vary red 0 19 255 255
-vary green 0 19 0 0
-vary blue 0 9 0 255
-vary blue 10 19 255 0
+vary red 0 29 148 39
+vary green 0 29 184 124
+vary blue 0 29 255 252
 
 vary xcor1 0 19 -1 1
-vary xcor1 20 39 1 -1
-vary ycor1 0 9 1 1
-vary zcor1 0 9 1 1
+vary xcor1 20 29 1 -1
+vary ycor1 0 29 -1 1
+vary zcor1 0 29 1 1
 
-vary green1 0 19 255 255
-vary red1 0 19 0 0
-vary blue1 0 19 0 255
-vary blue1 20 39 255 0
+vary green1 0 29 184 184
+vary red1 0 29 255 255
+vary blue1 0 29 0 163
+vary blue1 20 29 163 0
 
 vary xcor2 0 19 -1 1
-vary xcor2 20 39 1 -1
-vary ycor2 0 9 1 1
-vary zcor2 0 9 1 1
+vary xcor2 20 29 1 -1
+vary ycor2 0 29 1 1
+vary zcor2 0 29 1 1
 
-vary green2 0 19 105 155
-vary red2 0 19 0 0
-vary blue2 0 19 0 255
-vary blue2 20 39 255 0
+vary green2 0 29 98 100
+vary red2 0 29 249 249
+vary blue2 0 29 224 225
+
+move 40 0 0 movie
+move 0 60 0 movie2
+move 0 -60 0 movie3
+move -40 0 0 movie4
+rotate y 360 spinny
 
 
-
-// vary color1 0 9 1 255
-// vary location0 0 9 0.1 1
-
-
-move 400 0 0 movie
-move 0 150 0 movie2
-
+//Shading (Phong or gouraud)
 shading phong
+
+// Mesh
 mesh:baymac
-vary movie 0 19 0 1
-vary movie2 0 19 0 1
+
+
+vary movie 0 14 0 1
+vary movie2 0 14 0 1
+vary movie3 15 29 0 1
+vary movie4 15 29 0 1
+vary spinny 0 29 0 1

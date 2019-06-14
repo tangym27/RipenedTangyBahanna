@@ -5,7 +5,7 @@ from draw import *
 
 """======== first_pass( commands ) ==========
   Checks the commands array for any animation commands
-  (frames, basename, vary)
+  (frames, basename, vary).
   Should set num_frames and basename if the frames
   or basename commands are present
   If vary is found, but frames is not, the entire
@@ -117,8 +117,7 @@ def run(filename):
 
 
     for i in range(int(num_frames)):
-        print ("Pic " + str(i))
-        print(shade_type)
+        print ("Pic " + str(i+1) + " out of " + str(int(num_frames)) + " ==> " + str(int((i+1)/float(num_frames)*100)) + "% complete!")
         tmp = new_matrix()
         ident( tmp )
 
@@ -208,17 +207,17 @@ def run(filename):
                     lights.pop(thing - offset)
                     offset += 1
 
-                print "after clearing the stuff"
-                print lights
+                # print "after clearing the stuff"
+                # print lights
                 #COMMENTED THIS OUT
                 lights.append([s[1]['location'], s[1]['color'], command['light']])
-                print "after appending the lights"
-                print lights
+                # print "after appending the lights"
+                # print lights
                 s[1]['color'] = sample_color
                 s[1]['location'] = sample_location
 
-                print "these are the lights"
-                print lights
+                # print "these are the lights"
+                # print lights
 
             if c == 'mesh':
                 # this is some object file
