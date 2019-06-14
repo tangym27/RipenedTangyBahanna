@@ -16,6 +16,7 @@ Naming conventions that must be followed:
 
 ### List of features we implemented
 * Mesh
+
 ** note that in our mesh parsing we multiply the verticies by 6 to scale our included .obj file to the right size, and we only deal with .obj files that handle faces that are specified in / / / form.
 * Phong and Gouraud Shading
 * Using vary to move the light position / color
